@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card">
                     <div class="card-header">My urls</div>
 
@@ -15,6 +15,7 @@
                                     <th scope="col">Original link</th>
                                     <th scope="col">Generated link</th>
                                     <th scope="col">Date of expiration</th>
+                                    <th scope="col"># of visits allowed</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -23,7 +24,8 @@
                                         <th scope="row">{{ $loop->index + 1 }}</th>
                                         <td>{{ $url->original_link }}</td>
                                         <td>{{ $url->generated_link }}</td>
-                                        <td>{{ $url->date_of_expiration }}</td>
+                                        <td>{{ $url->date_of_expiration ?? "/" }}</td>
+                                        <td>{{ $url->number_of_allowed_visits ?? "/" }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

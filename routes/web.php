@@ -20,6 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => 'auth'], function () {
+    Route::get("my-urls", [\App\Http\Controllers\UrlsController::class, "index"])->name("my_urls");
 });
 
 Route::resource("urls", \App\Http\Controllers\UrlsController::class);

@@ -15,11 +15,11 @@
                             <input type="text" name="original_link" class="form-control" id="url" aria-describedby="url">
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" onchange="show_days(this.value)" type="radio" checked name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                            <input class="form-check-input" onchange="show_days(this.value)" type="radio" checked name="expiration_choice" id="inlineRadio1" value="days">
                             <label class="form-check-label" for="inlineRadio1">Expire after number of days</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" onchange="show_visits()" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                            <input class="form-check-input" onchange="show_visits()" type="radio" name="expiration_choice" id="inlineRadio2" value="visits">
                             <label class="form-check-label" for="inlineRadio2">Expire after a number of visits</label>
                         </div>
 
