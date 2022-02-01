@@ -25,5 +25,4 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::resource("urls", \App\Http\Controllers\UrlsController::class);
 
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -63,7 +63,7 @@ class UrlsController extends Controller
         // create a shortened url obj
         $url = new Url([
             "original_link" => $request->original_link,
-            "generated_link" => Str::random(8) . "-" . $leatest_url_id,
+            "generated_link" => env("APP_URL") . "/g/" . Str::random(8) . "-" . $leatest_url_id,
         ]);
 
         if(!is_null($request->expires_in_days)) {
@@ -74,7 +74,7 @@ class UrlsController extends Controller
 
         $url->save();
 
-        return $url;
+        return view("url_added", ["url" => $url]);
 
     }
 
