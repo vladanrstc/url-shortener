@@ -18,7 +18,7 @@ class UrlsController extends Controller
      */
     public function index()
     {
-        return view("my_urls", ["urls" => Url::where("user_id", Auth::id())->get()]);
+        return view("my_urls", ["urls" => Url::where("user_id", Auth::id())->orderBy("created_at", "DESC")->get()]);
     }
 
     /**
@@ -39,37 +39,43 @@ class UrlsController extends Controller
      */
     public function store(Request $request)
     {
-        $result_of_validations = $request->validate([
+        $request->validate([
             "original_link" => "required|url",
-            "number_of_allowed_visits" => "sometimes|numeric|min:1|max:50",
-            "expires_in_days" => "sometimes|numeric|min:1|max:5"
+            "expiration_choice" => "in:days,visits"
         ]);
-
-        // if for some reason, no value is sent for either date of expiration AND number of visits
-        if(is_null($result_of_validations['number_of_allowed_visits']) && is_null($result_of_validations['expires_in_days'])) {
-            throw ValidationException::withMessages(['You must pass number of allowed visit or expires in days']);
-        }
 
         // get last created id of a url
-        $leatest_url_id = Url::orderBy("created_at", "DESC")->first("id");
+        $latest_url_id = Url::orderBy("created_at", "DESC")->first("id");
 
         // if it's the first Row in the DB, there are now ID's so set it at one
-        if(is_null($leatest_url_id)) {
-            $leatest_url_id = 1;
+        if(is_null($latest_url_id)) {
+            $latest_url_id = 1;
         } else {
-            $leatest_url_id = $leatest_url_id->id + 1;
+            $latest_url_id = $latest_url_id->id + 1;
         }
 
-        // create a shortened url obj
+        // create a shortened url object
         $url = new Url([
             "original_link" => $request->original_link,
-            "generated_link" => env("APP_URL") . "/g/" . Str::random(8) . "-" . $leatest_url_id,
+            "generated_link" => env("APP_URL") . "/g/" . Str::random(8) . "-" . $latest_url_id,
         ]);
 
-        if(!is_null($request->expires_in_days)) {
+        if($request->expiration_choice == "days") {
+            $request->validate([
+                "expires_in_days" => "sometimes|numeric|min:1|max:5"
+            ]);
             $url->date_of_expiration = Carbon::now()->addDays($request->expires_in_days);
         } else {
+            $request->validate([
+                "number_of_allowed_visits" => "sometimes|numeric|min:1|max:50"
+            ]);
             $url->number_of_allowed_visits = $request->number_of_allowed_visits;
+        }
+
+        // if the user is logged in, store him as well so we can keep a track of all of his url's
+        $user = Auth::user() ?? Auth::guard("web")->user();
+        if(!is_null($user)) {
+            $url->user_id = $user->id;
         }
 
         $url->save();
