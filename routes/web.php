@@ -19,10 +19,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-
 Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::resource("urls", \App\Http\Controllers\UrlsController::class);
+Route::get("/g/{last_segment}", [\App\Http\Controllers\RedirectController::class, "redirect_to_url"]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
